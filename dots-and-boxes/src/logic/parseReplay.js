@@ -1,4 +1,10 @@
-import { createEmptyBoard, applyMove } from './gameUtils.js';
+import { createEmptyBoard, applyMove, cloneBoard, isLineClaimed } from './gameUtils.js';
+
+function normalizeDirectionLocal(dir) {
+  if (dir === 0 || dir === '0' || dir === 'h' || dir === 'H') return 'h';
+  if (dir === 1 || dir === '1' || dir === 'v' || dir === 'V') return 'v';
+  throw new Error(`Unknown direction: ${dir}`);
+}
 
 export default function parseReplay(encodedString) {
   if (!encodedString || typeof encodedString !== 'string') {
@@ -37,15 +43,46 @@ export default function parseReplay(encodedString) {
   }
 
   let board = createEmptyBoard(sizeX, sizeY);
-  const frames = [board];
+  const frames = [cloneBoard(board)];
+  let violation = null;
 
-  moves.forEach((move) => {
+  for (let i = 0; i < moves.length; i += 1) {
+    const move = moves[i];
+    // validate direction and bounds
+    let dir;
+    try {
+      dir = normalizeDirectionLocal(move.dir);
+    } catch (e) {
+      violation = { index: i, move, reason: 'invalid-direction', attempted: move, boardBefore: cloneBoard(board) };
+      break;
+    }
+
+    // bounds check
+    const x = move.x;
+    const y = move.y;
+    let outOfBounds = false;
+    if (dir === 'h') {
+      if (x < 0 || x >= sizeX || y < 0 || y > sizeY) outOfBounds = true;
+    } else {
+      if (x < 0 || x > sizeX || y < 0 || y >= sizeY) outOfBounds = true;
+    }
+    if (outOfBounds) {
+      violation = { index: i, move, reason: 'out-of-bounds', attempted: move, boardBefore: cloneBoard(board) };
+      break;
+    }
+
+    // already claimed?
+    if (isLineClaimed(board, dir, x, y)) {
+      violation = { index: i, move, reason: 'occupied', attempted: move, boardBefore: cloneBoard(board) };
+      break;
+    }
+
     const result = applyMove(board, move);
     board = result.board;
-    frames.push(result.board);
-  });
+    frames.push(cloneBoard(board));
+  }
 
-  return {
+  const out = {
     sizeX,
     sizeY,
     moves,
@@ -59,4 +96,28 @@ export default function parseReplay(encodedString) {
       boxes: frame.boxes.map((row) => [...row]),
     })),
   };
+
+  if (violation) {
+    // determine winner: the player who attempted the illegal move loses
+    const offender = violation.move.player;
+    const winner = offender === 0 ? 1 : 0;
+    out.violation = {
+      index: violation.index,
+      move: violation.move,
+      reason: violation.reason,
+      attempted: violation.attempted,
+      boardBefore: {
+        sizeX: violation.boardBefore.sizeX,
+        sizeY: violation.boardBefore.sizeY,
+        lines: {
+          horizontal: violation.boardBefore.lines.horizontal.map((row) => [...row]),
+          vertical: violation.boardBefore.lines.vertical.map((column) => [...column]),
+        },
+        boxes: violation.boardBefore.boxes.map((row) => [...row]),
+      },
+      winner,
+    };
+  }
+
+  return out;
 }

@@ -28,38 +28,41 @@ function SinglePlayerGame() {
   }, [gameState]);
 
   return (
-    <div>
-      <div className="game-status">
-        <p>{statusMessage}</p>
-      </div>
-      <div className="scoreboard">
-        <div>
-          <div className="player-label" style={{ color: '#e74c3c' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+      <div className="scoreboard" style={{ width: '640px', maxWidth: '100%' }}>
+        <div className={"player " + (gameState.currentPlayer === 0 ? 'player-current' : '')}>
+          <div className="player-label" style={{ color: '#e74c3c', fontWeight: 700, fontSize: '1.05rem' }}>
             플레이어 1
           </div>
-          <div>{gameState.scores[0]} 점</div>
+          <div className="player-score" style={{ fontSize: '1.4rem', fontWeight: 800 }}>{gameState.scores[0]} 점</div>
         </div>
-        <div>
-          <div className="player-label" style={{ color: '#3498db' }}>
+        <div className={"player " + (gameState.currentPlayer === 1 ? 'player-current' : '')}>
+          <div className="player-label" style={{ color: '#3498db', fontWeight: 700, fontSize: '1.05rem' }}>
             플레이어 2
           </div>
-          <div>{gameState.scores[1]} 점</div>
+          <div className="player-score" style={{ fontSize: '1.4rem', fontWeight: 800 }}>{gameState.scores[1]} 점</div>
         </div>
       </div>
 
-      <BoardSVG
-        sizeX={gameState.sizeX}
-        sizeY={gameState.sizeY}
-        lines={gameState.lines}
-        boxes={gameState.boxes}
-        onLineClick={handleLineClick}
-      />
-
-      <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-        <button type="button" onClick={resetGame}>
-          다시 시작
-        </button>
+        <div className="singleplayer-board-wrapper">
+        <BoardSVG
+          sizeX={gameState.sizeX}
+          sizeY={gameState.sizeY}
+          lines={gameState.lines}
+          boxes={gameState.boxes}
+          onLineClick={handleLineClick}
+        />
       </div>
+        {/* status message (current turn or victory) shown below the board, above the restart button */}
+        <div style={{ marginTop: '0.5rem', textAlign: 'center' }}>
+          <div style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--muted)' }}>{statusMessage}</div>
+        </div>
+
+        <div style={{ marginTop: '1rem', textAlign: 'center' }}>
+          <button type="button" onClick={resetGame}>
+            다시 시작
+          </button>
+        </div>
     </div>
   );
 }
