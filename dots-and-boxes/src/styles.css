@@ -1,0 +1,120 @@
+:root {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #2c3e50;
+  background-color: #f8f9fa;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.app-container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.mode-content {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.section-title {
+  margin: 0;
+  font-size: 2.2rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.controls-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: center;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: #3498db;
+  color: white;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  background: #bdc3c7;
+  color: #ecf0f1;
+}
+
+button:not(:disabled):hover {
+  background: #2c80b4;
+}
+
+button:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+input[type='range'] {
+  width: 240px;
+}
+
+textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #d0d0d0;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.scoreboard {
+  display: flex;
+  justify-content: space-around;
+  gap: 1rem;
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.scoreboard .player-label {
+  font-weight: 600;
+}
+
+.game-status {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.replay-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.turn-indicator {
+  font-weight: 600;
+}
+
+.replay-status {
+  margin-top: 1rem;
+  text-align: center;
+}
