@@ -7,4 +7,4 @@
 ![페이지 화면](./image.png)
 
 ## 웹 URL
-https://2025-haic.github.io/2025-HAIC-StaticWeb/
+[https://2025-haic.github.io/2025-HAIC-StaticWeb/](https://hanyangtechai.github.io/2025-HAIC-StaticWeb/)
